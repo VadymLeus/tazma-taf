@@ -1,0 +1,40 @@
+{
+  "description": "Files offered to the import field: what the media library must show or report.",
+  "sets": {
+    "valid": [
+      {
+        "id": "IMP-V01",
+        "title": "WebM VP9 2 s is added to the library",
+        "tags": ["@smoke"],
+        "files": [{ "kind": "fixture", "name": "short.webm" }],
+        "expect": { "library": [{ "fileName": "short.webm", "meta": "0:02.000 · 640×480" }], "errors": [] }
+      }
+    ],
+    "boundary": [
+      {
+        "id": "IMP-B01",
+        "title": "A good file and a bad one in one batch: the good one is kept, the bad one is reported",
+        "files": [
+          { "kind": "fixture", "name": "short.webm" },
+          { "kind": "generated", "generator": "text", "fileName": "broken-batch.webm" }
+        ],
+        "expect": { "library": [{ "fileName": "short.webm", "meta": "0:02.000 · 640×480" }], "errors": ["broken-batch.webm"] }
+      }
+    ],
+    "invalid": [
+      {
+        "id": "IMP-I01",
+        "title": "Text renamed to .webm is rejected with the file name in the message",
+        "tags": ["@smoke"],
+        "files": [{ "kind": "generated", "generator": "text", "fileName": "notes.webm" }],
+        "expect": { "library": [], "errors": ["notes.webm"] }
+      },
+      {
+        "id": "IMP-I02",
+        "title": "An empty file is rejected with the file name in the message",
+        "files": [{ "kind": "generated", "generator": "empty", "fileName": "empty.webm" }],
+        "expect": { "library": [], "errors": ["empty.webm"] }
+      }
+    ]
+  }
+}

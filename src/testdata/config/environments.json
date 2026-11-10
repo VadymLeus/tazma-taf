@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "baseURL": "http://localhost:5173",
+    "server": { "command": "npm run dev -- --port 5173 --strictPort", "port": 5173, "timeoutMs": 120000 }
+  },
+  "staging": {
+    "baseURL": "http://localhost:4173",
+    "server": { "command": "npm run build && npm run preview -- --port 4173 --strictPort", "port": 4173, "timeoutMs": 300000 }
+  },
+  "prod": {
+    "baseURL": null,
+    "baseURLFrom": "APP_PROD_URL",
+    "server": null
+  }
+}

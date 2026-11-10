@@ -1,0 +1,22 @@
+{
+  "description": "Length of one part of a resumable export, typed into the field. The accepted range is 2..600 s (equivalence classes and boundary values).",
+  "sets": {
+    "valid": [
+      { "id": "SEG-V01", "title": "Default value", "tags": ["@smoke"], "value": "30", "accepted": true },
+      { "id": "SEG-V02", "title": "Middle of the range", "value": "120", "accepted": true },
+      { "id": "SEG-V03", "title": "Fractional number inside the range", "value": "2.5", "accepted": true }
+    ],
+    "boundary": [
+      { "id": "SEG-B01", "title": "Just below the minimum (1.99)", "value": "1.99", "accepted": false },
+      { "id": "SEG-B02", "title": "The minimum (2)", "value": "2", "accepted": true },
+      { "id": "SEG-B03", "title": "The maximum (600)", "value": "600", "accepted": true },
+      { "id": "SEG-B04", "title": "Just above the maximum (600.01)", "value": "600.01", "accepted": false }
+    ],
+    "invalid": [
+      { "id": "SEG-I01", "title": "Zero", "tags": ["@smoke"], "value": "0", "accepted": false },
+      { "id": "SEG-I02", "title": "Negative number", "value": "-5", "accepted": false },
+      { "id": "SEG-I03", "title": "Empty field", "value": "", "accepted": false },
+      { "id": "SEG-I04", "title": "Far above the maximum", "value": "100000", "accepted": false }
+    ]
+  }
+}

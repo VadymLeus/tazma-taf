@@ -1,0 +1,10 @@
+{
+  "description": "Assumptions of the ROI estimate. Change a number and run: npm run coverage-roi",
+  "manualMinutesPerCheck": 3,
+  "humanMinutesPerAutomatedRun": 5,
+  "locPerHour": 40,
+  "maintenanceHoursPerMonth": 2,
+  "months": 2,
+  "runs": 40,
+  "sensitivityRuns": [10, 20, 40, 80]
+}

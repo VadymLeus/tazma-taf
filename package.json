@@ -1,0 +1,31 @@
+{
+  "name": "video-editor-taf",
+  "version": "1.0.0",
+  "description": "Test automation framework (gTAA, Playwright + TypeScript) for a browser video editor",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:ddt": "playwright test --grep @ddt",
+    "test:dev": "cross-env TAF_ENV=dev playwright test",
+    "test:staging": "cross-env TAF_ENV=staging playwright test",
+    "test:prod": "cross-env TAF_ENV=prod playwright test",
+    "test:flaky-check": "playwright test --grep @smoke --repeat-each=5 --retries=0",
+    "test:demo-failure": "cross-env DEMO_FAILURE=1 playwright test tests/demo",
+    "test:unit": "node --experimental-strip-types --test unit/*.test.ts",
+    "lint:waits": "node scripts/check-no-sleep.mjs",
+    "typecheck": "tsc --noEmit",
+    "report": "playwright show-report reports/html",
+    "coverage-roi": "node scripts/coverage-roi.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@types/node": "^22.10.0",
+    "cross-env": "^7.0.3",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=22.6.0"
+  }
+}

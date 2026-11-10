@@ -1,0 +1,83 @@
+{
+  "description": "Settings of the export page and what the finished export must look like (page and downloaded file). Source: short.webm, VP9, 640x480, 2 s, 30 fps, no audio.",
+  "sets": {
+    "valid": [
+      {
+        "id": "EXP-V01",
+        "title": "WebM / VP9 / full re-encode / medium quality",
+        "tags": ["@smoke"],
+        "source": "short.webm",
+        "settings": { "container": "webm", "mode": "full", "videoCodec": "vp9", "quality": "medium" },
+        "expect": { "format": "WebM · VP9, без звуку", "frame": "640×480, 60 кадрів", "mediaTag": "video", "fileExt": "webm", "signature": "webm" }
+      },
+      {
+        "id": "EXP-V02",
+        "title": "WebM / VP9 / selective mode (unchanged parts are copied)",
+        "source": "short.webm",
+        "settings": { "container": "webm", "mode": "selective", "videoCodec": "vp9", "quality": "medium" },
+        "expect": { "format": "WebM · VP9, без звуку", "frame": "640×480, 60 кадрів", "mediaTag": "video", "fileExt": "webm", "signature": "webm" }
+      },
+      {
+        "id": "EXP-V03",
+        "title": "GIF with the default 15 frames per second",
+        "tags": ["@smoke"],
+        "source": "short.webm",
+        "settings": { "container": "gif", "gifFps": 15 },
+        "expect": { "format": "GIF · 15 кадр/с, з розсіюванням, циклічний, без звуку", "frame": "640×480, 30 кадрів", "mediaTag": "img", "fileExt": "gif", "signature": "gif" }
+      },
+      {
+        "id": "EXP-V04",
+        "title": "MP4 / VP9 / full re-encode",
+        "tags": ["@needs-mp4"],
+        "source": "short.webm",
+        "settings": { "container": "mp4", "mode": "full", "videoCodec": "vp9", "quality": "medium" },
+        "expect": { "format": "MP4 · VP9, без звуку", "frame": "640×480, 60 кадрів", "mediaTag": "video", "fileExt": "mp4", "signature": "mp4" }
+      },
+      {
+        "id": "EXP-V05",
+        "title": "WebM / AV1 / full re-encode",
+        "tags": ["@slow"],
+        "source": "short.webm",
+        "settings": { "container": "webm", "mode": "full", "videoCodec": "av1", "quality": "medium" },
+        "expect": { "format": "WebM · AV1, без звуку", "frame": "640×480, 60 кадрів", "mediaTag": "video", "fileExt": "webm", "signature": "webm" }
+      }
+    ],
+    "boundary": [
+      {
+        "id": "EXP-B01",
+        "title": "GIF at the lowest frame rate of the list (5)",
+        "source": "short.webm",
+        "settings": { "container": "gif", "gifFps": 5 },
+        "expect": { "format": "GIF · 5 кадр/с, з розсіюванням, циклічний, без звуку", "frame": "640×480, 10 кадрів", "mediaTag": "img", "fileExt": "gif", "signature": "gif" }
+      },
+      {
+        "id": "EXP-B02",
+        "title": "GIF at the highest frame rate of the list (30)",
+        "source": "short.webm",
+        "settings": { "container": "gif", "gifFps": 30 },
+        "expect": { "format": "GIF · 30 кадр/с, з розсіюванням, циклічний, без звуку", "frame": "640×480, 60 кадрів", "mediaTag": "img", "fileExt": "gif", "signature": "gif" }
+      },
+      {
+        "id": "EXP-B03",
+        "title": "Smallest frame height offered (360): the frame is scaled to 480x360",
+        "source": "short.webm",
+        "settings": { "container": "webm", "mode": "full", "videoCodec": "vp9", "quality": "medium", "height": 360 },
+        "expect": { "format": "WebM · VP9, без звуку", "frame": "480×360, 60 кадрів", "mediaTag": "video", "fileExt": "webm", "signature": "webm" }
+      },
+      {
+        "id": "EXP-B04",
+        "title": "Lowest quality level",
+        "source": "short.webm",
+        "settings": { "container": "webm", "mode": "full", "videoCodec": "vp9", "quality": "low" },
+        "expect": { "format": "WebM · VP9, без звуку", "frame": "640×480, 60 кадрів", "mediaTag": "video", "fileExt": "webm", "signature": "webm" }
+      },
+      {
+        "id": "EXP-B05",
+        "title": "Highest quality level",
+        "source": "short.webm",
+        "settings": { "container": "webm", "mode": "full", "videoCodec": "vp9", "quality": "high" },
+        "expect": { "format": "WebM · VP9, без звуку", "frame": "640×480, 60 кадрів", "mediaTag": "video", "fileExt": "webm", "signature": "webm" }
+      }
+    ]
+  }
+}

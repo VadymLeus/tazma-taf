@@ -1,0 +1,134 @@
+# CI/CD of the test automation framework for the video editor under test.
+# Triggers: push / pull request, a nightly regression and a manual run with parameters.
+name: TAF
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '0 3 * * 1-5' # nightly regression, Monday to Friday, 03:00 UTC
+  workflow_dispatch:
+    inputs:
+      taf_env:
+        description: 'Environment: dev = Vite dev server, staging = production build served by vite preview, prod = a deployed URL'
+        type: choice
+        options: [dev, staging, prod]
+        default: dev
+      prod_url:
+        description: 'Application URL (needed only for prod)'
+        type: string
+        default: ''
+      tags:
+        description: 'Playwright --grep expression, e.g. @smoke or "@ddt|@export" (empty = everything)'
+        type: string
+        default: ''
+      workers:
+        description: 'Parallel workers per shard'
+        type: string
+        default: '2'
+      app_repo:
+        description: 'owner/name of the application repository (default: the repository variable APP_REPOSITORY)'
+        type: string
+        default: ''
+      app_ref:
+        description: 'Branch, tag or commit of the application to test'
+        type: string
+        default: 'main'
+
+concurrency:
+  group: taf-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Static checks and unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci || npm install
+      - run: npm run typecheck
+      - run: npm run lint:waits # no fixed sleeps
+      - run: npm run test:unit
+
+  e2e:
+    name: E2E (shard ${{ matrix.shardIndex }}/${{ matrix.shardTotal }})
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2]
+        shardTotal: [2]
+    env:
+      CI: 'true'
+      TAF_ENV: ${{ inputs.taf_env || 'dev' }}
+      TAF_REPORTERS: blob,list
+      TAF_WORKERS: ${{ inputs.workers || '2' }}
+      APP_DIR: ${{ github.workspace }}/app
+      APP_PROD_URL: ${{ inputs.prod_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        if: ${{ inputs.taf_env != 'prod' }}
+        with:
+          repository: ${{ inputs.app_repo || vars.APP_REPOSITORY }}
+          ref: ${{ inputs.app_ref || 'main' }}
+          path: app
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci || npm install
+      - name: Install the application
+        if: ${{ inputs.taf_env != 'prod' }}
+        working-directory: app
+        run: npm ci || npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Run tests
+        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} ${{ inputs.tags && format('--grep "{0}"', inputs.tags) || '' }}
+      - name: Upload blob report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-report-${{ matrix.shardIndex }}
+          path: blob-report
+          retention-days: 7
+      - name: Upload failure artefacts (screenshots, traces, videos, logs)
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-artefacts-${{ matrix.shardIndex }}
+          path: reports/artifacts
+          retention-days: 7
+
+  report:
+    name: Merged report
+    if: ${{ !cancelled() }}
+    needs: e2e
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci || npm install
+      - uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+      - name: Merge shards into one HTML report and one JUnit file
+        run: npx playwright merge-reports --reporter html,junit ./all-blob-reports
+        env:
+          PLAYWRIGHT_HTML_OPEN: never
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME: playwright-report/junit.xml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: html-report
+          path: playwright-report
+          retention-days: 14

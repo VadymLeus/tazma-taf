@@ -1,0 +1,56 @@
+{
+  "checks": {
+    "total": 40,
+    "automated": 28,
+    "manual": 12,
+    "coveragePercent": 70
+  },
+  "areas": {
+    "Імпорт": {
+      "total": 8,
+      "automated": 4,
+      "percent": 50
+    },
+    "Експорт": {
+      "total": 18,
+      "automated": 13,
+      "percent": 72.2
+    },
+    "Відновлюваний експорт": {
+      "total": 14,
+      "automated": 11,
+      "percent": 78.6
+    }
+  },
+  "loc": 1099,
+  "savedPerRunHours": 1.317,
+  "costHours": 31.48,
+  "breakEvenRuns": 24,
+  "base": {
+    "runs": 40,
+    "savingsHours": 52.67,
+    "roiPercent": 67.3
+  },
+  "sensitivity": [
+    {
+      "runs": 10,
+      "savingsHours": 13.17,
+      "roiPercent": -58.2
+    },
+    {
+      "runs": 20,
+      "savingsHours": 26.33,
+      "roiPercent": -16.3
+    },
+    {
+      "runs": 40,
+      "savingsHours": 52.67,
+      "roiPercent": 67.3
+    },
+    {
+      "runs": 80,
+      "savingsHours": 105.33,
+      "roiPercent": 234.7
+    }
+  ]
+}
